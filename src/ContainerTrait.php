@@ -25,4 +25,16 @@ trait ContainerTrait {
 
         return null;
     }
+
+    /**
+     * Set dynamic property to container.
+     *
+     * @param string $name
+     * @param mixed  $value
+     *
+     * @return void
+     */
+    public function __set( $name, $value ) {
+        $this->container[ $name ] = $value;
+    }
 }

@@ -30,13 +30,10 @@ class MyPlugin {
 
     public function __construct() {
         // Register an instance
-        $this->register('my_service', new MyService());
-
-        // Retrieve the instance
-        $myService = $this->get('my_service');
+        $this->my_service = new MyService();
 
         // Use the instance
-        $myService->doSomething();
+        $this->my_service->doSomething();
     }
 
     // Rest of your plugin code...
@@ -58,20 +55,17 @@ class MyPlugin {
 
     public function __construct() {
         // Add an action hook
-        $this->add_action('init', 'my_init_function');
+        $this->add_action( 'init', 'my_init_function' );
 
         // Add a filter hook
-        $this->add_filter('the_title', 'my_title_filter');
-
-        // Execute an action hook
-        $this->do_action('custom_action', $arg1, $arg2);
+        $this->add_filter( 'the_title', 'my_title_filter' );
     }
 
     public function my_init_function() {
         // Actions to be performed during 'init'
     }
 
-    public function my_title_filter($title) {
+    public function my_title_filter( $title ) {
         // Modify the post title
         return $title . ' - Customized';
     }
@@ -96,13 +90,13 @@ class MyPlugin {
 
     public function some_method() {
         // Log an informational message
-        $this->log_info('Some informational message.');
+        $this->log_info( 'Some informational message.' );
 
         // Log an error message
-        $this->log_error('An error occurred.');
+        $this->log_error( 'An error occurred.' );
 
         // Log a debug message
-        $this->log_debug('A debug message');
+        $this->log_debug( 'A debug message' );
     }
 
     // Rest of your plugin code...

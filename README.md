@@ -1,4 +1,4 @@
-# WeDevs WP Utils
+# WordPress Utils
 
 [![License: LGPL v3](https://img.shields.io/badge/License-GPL_v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Packagist](https://img.shields.io/packagist/v/wedevs/wp-utils.svg)](https://packagist.org/packages/wedevs/wp-utils)

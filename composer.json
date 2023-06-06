@@ -1,0 +1,38 @@
+{
+    "name": "wedevs/wp-utils",
+    "description": "Various WordPress classes and traits for WordPress",
+    "homepage": "https://wedevs.com/",
+    "keywords": [
+        "wordpress",
+        "utils",
+        "traits",
+        "classes"
+    ],
+    "type": "library",
+    "license": "GPL-3.0-or-later",
+    "autoload": {
+        "psr-4": {
+            "WeDevs\\WpUtils\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Tareq Hasan",
+            "email": "tareq@wedevs.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "require-dev": {
+        "tareq1988/wp-php-cs-fixer": "dev-master",
+        "wp-coding-standards/wpcs": "dev-master",
+        "phpcompatibility/php-compatibility": "9.*",
+        "phpcompatibility/phpcompatibility-wp": "*",
+        "dealerdirect/phpcodesniffer-composer-installer": "^0.7"
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    }
+}

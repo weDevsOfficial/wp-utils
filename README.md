@@ -1,7 +1,9 @@
 # WeDevs WP Utils
 
-[![License: LGPL v3](https://img.shields.io/badge/License-LGPL_v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)
+[![License: LGPL v3](https://img.shields.io/badge/License-GPL_v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Packagist](https://img.shields.io/packagist/v/wedevs/wp-utils.svg)](https://packagist.org/packages/wedevs/wp-utils)
+![GitHub all releases](https://img.shields.io/github/downloads/weDevsOfficial/wp-utils/total?label=GitHub%20Downloads)
+![Packagist Downloads](https://img.shields.io/packagist/dt/wedevs/wp-utils?label=Packagist)
 
 A collection of useful codes and utilities for WordPress plugin development. These simplifies common tasks and promote code reusability in WordPress projects.
 

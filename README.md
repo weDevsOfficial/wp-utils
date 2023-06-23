@@ -130,6 +130,30 @@ $instance->doSomething();
 
 ```
 
+### AjaxTrait
+
+The `AjaxTrait` provides a function to create the WordPress AJAX actions easily. No need to add actions for logged-in and logged-out users separately.
+
+Usage example:
+
+```php
+use WeDevs\WpUtils\AjaxTrait;
+
+class MyAjaxClass {
+
+    use AjaxTrait;
+
+    public function __construct() {
+        // Register an AJAX action.
+        // This will produce:
+        // add_action( 'wp_ajax_yourproject_submit_form, [ $this, 'submit_form_callback' ] );
+        // add_action( 'wp_ajax_nopriv_yourproject_submit_form, [ $this, 'submit_form_callback' ] );
+        $this->register_ajax( 'yourproject_submit_form', [ $this, 'submit_form_callback' ] );
+    }
+}
+
+```
+
 
 ## License
 

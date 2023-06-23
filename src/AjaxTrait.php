@@ -5,6 +5,20 @@ namespace WeDevs\WpUtils;
 trait AjaxTrait {
 
 	/**
+	 * A predefined array to use when we need to create AJAX actions only for logged in users
+	 *
+	 * @var array
+	 */
+	protected $logged_in_only = [ 'nopriv' => false ];
+
+	/**
+	 * A predefined array to use when we need to create AJAX actions only for logged out users
+	 *
+	 * @var array
+	 */
+	protected $logged_out_only = [ 'nopriv' => true, 'priv' => false ];
+
+	/**
 	 * Register ajax into action hook
 	 *
 	 * Usage:
@@ -20,19 +34,20 @@ trait AjaxTrait {
 	 */
 	public function register_ajax( $action, $callback, $args = [] ) {
 		$default = [
-			'prefix' => '',     // it is always a good idea to prefix actions to make it unique.
-			'nopriv' => true,
-			'priv'   => true,
+			'nopriv'        => true,
+			'priv'          => true,
+			'priority'      => 10,
+			'accepted_args' => 1,
 		];
 
 		$args = wp_parse_args( $default, $args );
 
 		if ( $args['priv'] ) {
-			add_action( 'wp_ajax' . $args['prefix'] . $action, $callback );
+			add_action( 'wp_ajax_' . $action, $callback, $args['priority'], $args['accepted_args'] );
 		}
 
 		if ( $args['nopriv'] ) {
-			add_action( 'wp_ajax_nopriv' . $args['prefix'] . $action, $callback );
+			add_action( 'wp_ajax_nopriv_' . $action, $callback, $args['priority'], $args['accepted_args'] );
 		}
 	}
 }

@@ -5,131 +5,175 @@
 ![GitHub all releases](https://img.shields.io/github/downloads/weDevsOfficial/wp-utils/total?label=GitHub%20Downloads)
 ![Packagist Downloads](https://img.shields.io/packagist/dt/wedevs/wp-utils?label=Packagist)
 
-A collection of useful codes and utilities for WordPress plugin development. These simplifies common tasks and promote code reusability in WordPress projects.
+A collection of useful utilities for WordPress plugin development. Includes an Eloquent-inspired ORM, reusable traits, and common helpers.
 
 ## Installation
-
-Install the package via Composer:
 
 ```bash
 composer require wedevs/wp-utils
 ```
 
-## Usage
+## Models & ORM
 
-### ContainerTrait
-
-With `ContainerTrait` you can easily store and retrieve dynamic properties within your classes, providing a flexible and convenient way to manage and access data without the need for explicitly defined class properties.
-
-Usage example:
+An Eloquent-inspired ORM built for WordPress. Define models, query with a fluent builder, and get results as typed collections.
 
 ```php
-use WeDevs\WpUtils\ContainerTrait;
+use WeDevs\WpUtils\Models\Model;
+use WeDevs\WpUtils\Models\Traits\HasTimestamps;
+use WeDevs\WpUtils\Models\Traits\SoftDeletes;
+
+class Contact extends Model {
+    use HasTimestamps, SoftDeletes;
+
+    protected static $table = 'crm_contacts';
+
+    protected $fillable = [ 'first_name', 'last_name', 'email', 'phone' ];
+
+    protected $casts = [
+        'id' => 'int',
+        'is_active' => 'bool',
+    ];
+
+    protected static function getHookPrefix() {
+        return 'myplugin';
+    }
+}
+```
+
+### Quick Examples
+
+```php
+// Create
+$contact = Contact::create( [ 'first_name' => 'John', 'email' => 'john@example.com' ] );
+
+// Find
+$contact = Contact::find( 1 );
+$contact = Contact::findBy( 'email', 'john@example.com' );
+
+// Query
+$contacts = Contact::query()
+    ->where( 'status', 'active' )
+    ->where( 'age', '>=', 18 )
+    ->orderBy( 'created_at', 'DESC' )
+    ->limit( 10 )
+    ->get();
+
+// Update
+$contact->update( [ 'phone' => '555-1234' ] );
+
+// Soft delete & restore
+$contact->trash();
+$contact->restore();
+
+// Aggregates
+$count = Contact::query()->where( 'active', 1 )->count();
+$total = Contact::query()->sum( 'amount' );
+
+// Pagination
+$result = Contact::query()->paginate( 20, 1 );
+// [ 'data' => Collection, 'total' => 150, 'per_page' => 20, ... ]
+```
+
+### Available Traits
+
+| Trait | Description |
+|-------|-------------|
+| `HasTimestamps` | Auto-manages `created_at` and `updated_at` columns |
+| `SoftDeletes` | Soft-delete via `deleted_at` with auto-scoping |
+| `HasHash` | Auto-generates UUID v4 hash on creation |
+
+### Full Documentation
+
+See **[docs/models.md](docs/models.md)** for the complete guide covering:
+
+- Model definition and configuration
+- Hook prefix system for namespaced WordPress hooks
+- Query builder (WHERE, ORDER, LIMIT, aggregates, pagination, bulk operations)
+- Accessors, mutators, and dirty tracking
+- Collections API
+- Trait details (SoftDeletes, HasTimestamps, HasHash)
+- Lifecycle hooks and filters reference
+
+---
+
+## Traits
+
+### Container
+
+Dynamic property storage via `__get`, `__set`, `__isset`, and `__unset` magic methods.
+
+```php
+use WeDevs\WpUtils\Container;
 
 class MyPlugin {
-
-    use ContainerTrait;
+    use Container;
 
     public function __construct() {
-        // Register an instance
         $this->my_service = new MyService();
-
-        // Use the instance
         $this->my_service->doSomething();
     }
-
-    // Rest of your plugin code...
 }
-
 ```
 
-### HookTrait
+### Hooks
 
-The `HookTrait` provides reusable methods for managing WordPress action and filter hooks in your plugin. It simplifies the process of adding, removing, or executing hooks.
+Convenience methods for WordPress action and filter hooks.
 
 ```php
-
-use WeDevs\WpUtils\HookTrait;
+use WeDevs\WpUtils\Hooks;
 
 class MyPlugin {
-
-    use HookTrait;
+    use Hooks;
 
     public function __construct() {
-        // Add an action hook
-        $this->add_action( 'init', 'my_init_function' );
-
-        // Add a filter hook
-        $this->add_filter( 'the_title', 'my_title_filter' );
+        $this->add_action( 'init', 'on_init' );
+        $this->add_filter( 'the_title', 'filter_title' );
     }
 
-    public function my_init_function() {
-        // Actions to be performed during 'init'
+    public function on_init() {
+        // ...
     }
 
-    public function my_title_filter( $title ) {
-        // Modify the post title
-        return $title . ' - Customized';
+    public function filter_title( $title ) {
+        return $title . ' - Modified';
     }
-
-    // Rest of your plugin code...
 }
-
 ```
 
-### LogTrait
+### Logger
 
-The `LogTrait` provides a simple logging mechanism for your WordPress plugin. It allows you to log messages to the PHP error log.
-
-Usage example:
+Simple logging with level support and optional context data. Debug messages only log when `WP_DEBUG` is enabled.
 
 ```php
-use WeDevs\WpUtils\LogTrait;
+use WeDevs\WpUtils\Logger;
 
 class MyPlugin {
-
-    use LogTrait;
+    use Logger;
 
     public function some_method() {
-        // Log an informational message
-        $this->log_info( 'Some informational message.' );
-
-        // Log an error message
-        $this->log_error( 'An error occurred.' );
-
-        // Log a debug message
-        $this->log_debug( 'A debug message' );
+        $this->log_info( 'User logged in', [ 'user_id' => 5 ] );
+        $this->log_error( 'Payment failed', [ 'order_id' => 123 ] );
+        $this->log_warning( 'Rate limit approaching' );
+        $this->log_debug( 'Query executed' ); // only when WP_DEBUG is on
     }
-
-    // Rest of your plugin code...
 }
 
+// Output: [INFO][MyPlugin] User logged in {"user_id":5}
 ```
 
-### SingletonTrait
+### Singleton
 
-The `SingletonTrait` implements the singleton pattern for your WordPress plugin classes. It ensures that only one instance of the class is created and provides a global access point to that instance.
-
-Usage example:
+Singleton pattern with proper per-class instance isolation.
 
 ```php
-use WeDevs\WpUtils\SingletonTrait;
+use WeDevs\WpUtils\Singleton;
 
 class MySingletonClass {
-
-    use SingletonTrait;
-
-    // Rest of your singleton class implementation...
+    use Singleton;
 }
 
-// Get the instance of the singleton class
 $instance = MySingletonClass::instance();
-
-// Use the instance
-$instance->doSomething();
-
 ```
-
 
 ## License
 

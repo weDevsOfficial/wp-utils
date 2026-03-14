@@ -2,7 +2,7 @@
 
 namespace WeDevs\WpUtils;
 
-trait HookTrait {
+trait Hooks {
 
     /**
      * Add action hook.

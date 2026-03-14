@@ -1,0 +1,28 @@
+includes:
+    - vendor/szepeviktor/phpstan-wordpress/extension.neon
+
+parameters:
+    level: 6
+    paths:
+        - src/
+    excludePaths:
+        - vendor/
+    bootstrapFiles:
+        - vendor/autoload.php
+    scanDirectories:
+        - vendor/php-stubs/wordpress-stubs/
+    treatPhpDocTypesAsCertain: false
+    ignoreErrors:
+        # Library traits are consumed by external packages, not internally.
+        -
+            identifier: trait.unused
+        # Abstract factory pattern: new static() is safe in our Model hierarchy
+        # because all concrete models extend Model and have no constructor changes.
+        -
+            identifier: new.static
+            path: src/Models/
+        # QueryBuilder returns Model|null but callers expect concrete static|null.
+        # This is inherent to the non-generic QueryBuilder pattern (same as Laravel).
+        -
+            identifier: return.type
+            path: src/Models/
